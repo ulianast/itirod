@@ -1,10 +1,13 @@
 package com.krasnova.lab4.Domain.Transactions;
 
+import lombok.Getter;
+
 import com.krasnova.lab4.Domain.BankOperation;
 import com.krasnova.lab4.Domain.Bill;
 import com.krasnova.lab4.Domain.Casier;
 
 public class CrossBillTransaction extends Transaction {
+	@Getter
 	private Bill secondBill;
 	private int ammount;
 	
@@ -16,13 +19,15 @@ public class CrossBillTransaction extends Transaction {
 	}
 	
 	@Override
-	synchronized public void run() {
+	public void run() {
 		casier.setOperatinonComplete(false);
 		boolean isSuccess = false;
-		synchronized(this){
+		
+		synchronized(this){		
 			isSuccess = firstBill.transferTo(ammount, secondBill);
+			casier.setOperatinonComplete(true);
+			casier.setOpertionSuccessful(isSuccess);
+			this.notify();
 		}
-		casier.setOperatinonComplete(true);
-		casier.setOpertionSuccessful(isSuccess);
 	}
 }

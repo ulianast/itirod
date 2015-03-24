@@ -6,7 +6,7 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Bill {
+public class Bill implements Comparable<Bill>{
 	private int ammount;
 	@Getter 
 	private UUID billNumber;
@@ -43,6 +43,12 @@ public class Bill {
 	synchronized public boolean putMoneyOn(int ammount){
 		this.ammount += ammount;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Bill anotherBill) {
+		return this.billNumber.compareTo(anotherBill.billNumber);
+		
 	}
 
 	

@@ -1,6 +1,8 @@
 package com.krasnova.lab2;
 
 import static org.junit.Assert.*;
+
+import java.io.FileNotFoundException;
 import java.util.*;
 import org.junit.Test;
 
@@ -101,7 +103,7 @@ public class MatrixTests {
 		firstElements.add( new ArrayList<Integer> ( Arrays.asList(2,1,5,1)));
 		
 		List<List<Integer>> secondElements = new ArrayList<>(4);
-		secondElements.add( new ArrayList<Integer> ( Arrays.asList(-4,1,0,1)));
+		secondElements.add( new ArrayList<Integer> ( Arrays.asList(-4,1,0,1,2)));
 		secondElements.add( new ArrayList<Integer> ( Arrays.asList(1,12,5,11)));
 		secondElements.add( new ArrayList<Integer> ( Arrays.asList(0,-1,10,1)));
 		secondElements.add( new ArrayList<Integer> ( Arrays.asList(1,1,18,1)));
@@ -174,5 +176,27 @@ public class MatrixTests {
 		//Test
 		
 		firstMatrix.multiply(secondMatrix);
+	}
+	
+	@Test(expected  = RuntimeException.class)
+	public void multiply_NotSoglasovanieMatrixes() {
+		//Initialization
+				List<List<Integer>> firstElements = new ArrayList<>(4);
+				firstElements.add( new ArrayList<Integer> ( Arrays.asList(1,2,3,4,5,5)));
+				firstElements.add( new ArrayList<Integer> ( Arrays.asList(11,12,31,41,5,5)));
+				firstElements.add( new ArrayList<Integer> ( Arrays.asList(1,-21,1,0,5,5)));
+				firstElements.add( new ArrayList<Integer> ( Arrays.asList(2,1,5,1,5,5)));
+				
+				List<List<Integer>> secondElements = new ArrayList<>(4);
+				secondElements.add( new ArrayList<Integer> ( Arrays.asList(-4,1,0,1)));
+				secondElements.add( new ArrayList<Integer> ( Arrays.asList(1,12,5,11)));
+				secondElements.add( new ArrayList<Integer> ( Arrays.asList(0,-1,10,1)));
+				secondElements.add( new ArrayList<Integer> ( Arrays.asList(1,1,18,1)));
+				
+				Matrix firstMatrix = new Matrix(firstElements);
+				Matrix secondMatrix = new Matrix(secondElements);
+				
+				Matrix rezult = firstMatrix.multiply(secondMatrix);
+		
 	}
 }

@@ -1,6 +1,5 @@
 package com.krasnova.lab4.Domain;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,20 +17,22 @@ public class Client {
 	 
 	private int cashAmmount;
 	
-	public Client(String firstName, String lastName, int cash){
+	private Bank bank;
+	
+	
+	public Client(String firstName, String lastName, int cash, Bank bank){
 		bills = new ConcurrentHashMap<UUID, Bill> ();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.cashAmmount = cash;
+		this.bank = bank;
 	}
 	
-	public void addNewBill(int ammount){
+	public UUID addNewBill(int ammount){
 		Bill newBill = new Bill(ammount);
-		
-		synchronized(newBill){
-			newBill.setClient(this);
-			this.bills.put(newBill.getBillNumber(), newBill);
-		}
+		this.bills.put(newBill.getBillNumber(), newBill);
+		bank.getBills().put(newBill.getBillNumber(), newBill);
+		return newBill.getBillNumber();
 	}
 	
 	synchronized public void addMoney(int p_ammount){
@@ -48,4 +49,5 @@ public class Client {
 	synchronized public int getCashAmmount(){
 		return this.cashAmmount;
 	}
+
 }

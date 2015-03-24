@@ -1,5 +1,6 @@
 package com.krasnova.lab4.Domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,27 +8,42 @@ import java.util.UUID;
 
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Bank {
 	@Getter
 	private Map<String, Client> clients;
 	@Getter
-	private Map<String,Casier> casiers;
+	private List<Casier> casiers;
+	private List<Thread> cashierThreads;
 	@Getter
 	private Map<UUID, Bill> bills;
 	@Getter
 	private int totalAmmount;
+	@Setter
+	private boolean working;
+	
+	
 	
 	public Bank(int p_totalAmmount){
-		totalAmmount = p_totalAmmount;
-		clients = new HashMap<String, Client>();
-		bills = new HashMap<UUID, Bill>();
-		casiers = new HashMap<String, Casier>();
+		this.working = true;
+		this.totalAmmount = p_totalAmmount;
+		this.clients = new HashMap<String, Client>();
+		this.bills = new HashMap<UUID, Bill>();
+		this.casiers = new ArrayList<Casier>();
+		this.cashierThreads = new ArrayList<Thread>();
+		
 	}
 	
 	public void hireCasiers(List<Casier> hiredCasiers){
-		for(Casier casier : hiredCasiers){
-			this.casiers.put(casier.getFirstName() + " " + casier.getLastName(), casier);
+		this.casiers.addAll(casiers);
+	}
+	
+	public void startWorkingDay(){
+		for(Casier cashier : this.casiers){
+			Thread thread = new Thread(cashier);
+			thread.start();
+			this.cashierThreads.add(thread);
 		}
 	}
 	
@@ -38,5 +54,34 @@ public class Bank {
 				this.bills.put(bill.getBillNumber(), bill);
 			}
 		}
+	}
+	
+	public boolean serveNextClient(ClientIntention intention){
+		for (int i = 0 ; i < casiers.size(); i++ ){
+			synchronized(casiers.get(i)){
+				if (cashierThreads.get(i).getState() == Thread.State.WAITING){
+					casiers.get(i).setClientIntention(intention);
+					casiers.get(i).notify();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean isWorking(){
+		return working;
+	}
+	
+	public boolean endWorkingDay(){
+		this.working = false;
+		for(Thread cashTh : cashierThreads){
+			try{
+				cashTh.join();
+			}catch(InterruptedException e){
+				
+			}
+		}
+		return true;
 	}
 }

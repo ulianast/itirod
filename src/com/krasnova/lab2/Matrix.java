@@ -46,6 +46,9 @@ public class Matrix implements Serializable{
 	
 	public Matrix multiply( Matrix p_other){
 		List<List<Integer>> table;
+		if(this.elements.get(0).size() != p_other.elements.size()){
+			throw new RuntimeException("invalid matrixes");
+		}
 		
 		if (ArrayList.class.isInstance( p_other.getElements()))
 			 table = new ArrayList<>();

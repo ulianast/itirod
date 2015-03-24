@@ -23,29 +23,51 @@ public class ClientBillTransaction extends Transaction{
 		this.casier.setOperatinonComplete(false);
 	}
 	@Override
-	synchronized public void run(){
+	public void run(){
 		boolean isSuccess= false;
 		
 		synchronized(this){
 			switch(op){
 			case PUT_MONEY_ON:
+				System.out.println("OPERATION: putting money on.");
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				if(client.subMoney(ammount)){
 					isSuccess =  firstBill.putMoneyOn(ammount);
 				}else 
 					isSuccess = false;
 				break;
 			case TAKE_MONEY_OFF:
+				System.out.println("OPERATION: taking money off.");
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				if(firstBill.takeMoneyOff(ammount)){
 					client.addMoney(ammount);
 					isSuccess = true;
 				}else 
 					isSuccess = false;
 				break;
+			case CHECK_AMMOUNT:
+				break;
+			case TRANSFER:
+				break;
 			}
+			
+			
+			this.casier.setOperatinonComplete(true);
+			this.casier.setOpertionSuccessful(isSuccess);
+			System.out.println("OPERATION " + (isSuccess ? "SUCCESSFUL" : "FAILED"));
+			this.notify();
 		}
 		
-		this.casier.setOperatinonComplete(true);
-		this.casier.setOpertionSuccessful(isSuccess);
 		return;		
 	}
 
