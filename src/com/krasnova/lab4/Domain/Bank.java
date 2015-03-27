@@ -36,7 +36,7 @@ public class Bank {
 	}
 	
 	public void hireCasiers(List<Casier> hiredCasiers){
-		this.casiers.addAll(casiers);
+		this.casiers.addAll(hiredCasiers);
 	}
 	
 	public void startWorkingDay(){
@@ -75,9 +75,14 @@ public class Bank {
 	
 	public boolean endWorkingDay(){
 		this.working = false;
-		for(Thread cashTh : cashierThreads){
+		for(int i = 0; i < cashierThreads.size(); i++){
+			synchronized(casiers.get(i)){
+				if (cashierThreads.get(i).getState() == Thread.State.WAITING){
+					casiers.get(i).notify();
+				}
+			}
 			try{
-				cashTh.join();
+				cashierThreads.get(i).join();
 			}catch(InterruptedException e){
 				
 			}

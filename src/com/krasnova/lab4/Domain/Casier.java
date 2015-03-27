@@ -37,17 +37,17 @@ public class Casier implements Runnable{
 		while(bank.isWorking()){
 			synchronized(this){
 				try {
+					System.out.println("Casier " + this.firstName + " is waiting for client");
 					this.wait();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				if ( clientIntention != null){
-					System.out.println("Casier" + this.firstName + "started serving client " + clientIntention.getClient().getFirstName() +
+					System.out.println("Casier " + this.firstName + " started serving client " + clientIntention.getClient().getFirstName() +
 							" who wants to perform " + clientIntention.getOperation() + "operation");
-					System.out.println();
-					boolean result = false;
-					int ammount; 
+					boolean result = false; 
+					emulateOperation(1000);
 					
 					switch (clientIntention.getOperation()){
 						case CHECK_AMMOUNT:
@@ -75,8 +75,9 @@ public class Casier implements Runnable{
 									clientIntention.getSecondBill());
 							break;						
 					}					
-					System.out.println("Casier" + this.firstName + "end serving client " + clientIntention.getClient().getFirstName() +
+					System.out.println("Casier " + this.firstName + " end serving client " + clientIntention.getClient().getFirstName() +
 							" with " + (result ? "success" : "fail") + " result");
+					clientIntention.setSuccessEnd(result);
 				}
 			}
 		}
@@ -91,7 +92,6 @@ public class Casier implements Runnable{
 				ammount,
 				BankOperation.PUT_MONEY_ON);
 		
-		System.out.println("");
 		boolean transRez = executeTransaction(trans);
 		
 		return transRez;
@@ -142,5 +142,14 @@ public class Casier implements Runnable{
 		
 		TransactionFactory.getInstance().releseTransaction(trans);
 		return rezult;
+	}
+	
+	private void emulateOperation(long miliseconds){
+		try {
+			Thread.sleep(miliseconds);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
