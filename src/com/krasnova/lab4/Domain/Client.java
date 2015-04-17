@@ -6,8 +6,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 import lombok.Getter;
+import lombok.Setter;
 
-public class Client {
+public class Client implements Runnable{
 	@Getter 
 	private Map<UUID,Bill> bills;
 	@Getter 
@@ -18,9 +19,11 @@ public class Client {
 	private int cashAmmount;
 	
 	private Bank bank;
+	@Setter
+	private ClientIntention intention;
 	
 	
-	public Client(String firstName, String lastName, int cash, Bank bank){
+	public Client(String firstName, String lastName, int cash, Bank bank) {
 		bills = new ConcurrentHashMap<UUID, Bill> ();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -48,6 +51,15 @@ public class Client {
 	
 	synchronized public int getCashAmmount(){
 		return this.cashAmmount;
+	}
+
+	@Override
+	public void run() {
+		System.out.println(intention);
+		if (intention != null ){
+			while( ! bank.serveClient(intention) && bank.isWorking());
+		}
+		
 	}
 
 }

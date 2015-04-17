@@ -72,37 +72,7 @@ public class BankLauncher {
 		Thread.sleep(5000);
 		
 		System.in.read();*/
-		
-Bank bank = new Bank(1000);
-		
-		Casier casier1 = new Casier("casier1", "casier1", bank);
-		
-		Client client1 = new Client("client1", "client1", 100, bank);
-		Client client2 = new Client("client2", "client2", 200, bank);
-		
-		UUID billNumber1 = client1.addNewBill(0);
-		UUID billNumber2 = client2.addNewBill(500);
-		
-		ClientIntention intention1 = new ClientIntention(
-				BankOperation.PUT_MONEY_ON,
-				billNumber1,
-				null,
-				client1,
-				50);
-		ClientIntention intention2 = new ClientIntention(
-				BankOperation.TAKE_MONEY_OFF,
-				billNumber2,
-				null,
-				client2,
-				150);
-		
-		bank.addClients(new ArrayList<Client>(Arrays.asList(client1, client2)));
-		bank.hireCasiers(new ArrayList<Casier>(Arrays.asList(casier1)));
-		
-		//Test
-		bank.startWorkingDay();
-		while( ! bank.serveNextClient(intention1));
-		bank.endWorkingDay();
+
 	}
 
 }
